@@ -25,8 +25,8 @@ app.get('/todos', (req, res) => {
 
 //this endpoint adds a new task to the to-do list upon receiving a POST request at the /todos URL
 app.post('/todos', (req, res) => {
-    const {toDoTask} = req.body; //accesses the task description from the request object
-    const newToDo = {id: todos.length + 1, task: toDoTask}; //create new JSON object "newToDo" with attributes "id" and "task", where "id" corresponds to the task number that this task will be on the to-do list and "task" has the string value of its description
+    const {task} = req.body; //accesses the task description from the request object
+    const newToDo = {id: todos.length + 1, task}; //create new JSON object "newToDo" with attributes "id" and "task", where "id" corresponds to the task number that this task will be on the to-do list and "task" has the string value of its description
     todos.push(newToDo); //adds new to-do object to list
     res.status(201).json(newToDo);
 });
