@@ -23,12 +23,32 @@ app.get('/todos', (req, res) => {
     res.json(todos);
 });
 
-//this endpoint adds a new item to the to-do list upon receiving a POST request
+//this endpoint adds a new task to the to-do list upon receiving a POST request at the /todos URL
 app.post('/todos', (req, res) => {
-    const {todoTask} = req.body;
-    const newToDo = {id: todos.length + 1, task}; //create JSON object with attribute "id" corresponding to the number on the to-do list this task takes on
-    todos.push(newToDo);
+    const {toDoTask} = req.body; //accesses the task description from the request object
+    const newToDo = {id: todos.length + 1, task: toDoTask}; //create new JSON object "newToDo" with attributes "id" and "task", where "id" corresponds to the task number that this task will be on the to-do list and "task" has the string value of its description
+    todos.push(newToDo); //adds new to-do object to list
     res.status(201).json(newToDo);
 });
 
+//this endpoint updates an exist item upon receiving a PUT request at the /todos/:id URL, where :id is a route parameter whose argument is passed dynamically by the client, representing the ID of the task that the client wants to update
+app.put('/todos/:id', (req, res) => {
+    const { id } = req.params; //req.params consists of any route parameters from the request data, such as "id" in this case
+    const { task } = req.body; //the req.body in a PUT request only contains the data that is to be updated. The "id" of the task object is already provided in the URL, so the req. body will only contain the updated task description.
+    const todo = todos.find((t) => t.id === parseInt(id)); //todos.find() searches through the "todos" array until it finds the task whose ID matches the ID in the client request
+  
+    if (todo) { //if the todo object is found, update the task and send back the updated task object. 
+      todo.task = task;
+      res.json(todo);
+    } else {
+      res.status(404).send('To-Do item not found');
+    }
+});
+  
+//this endpoint deletes the task object with the given "id" value at the /todos/:id URL
+app.delete('/todos/:id', (req, res) => {
+    const { id } = req.params; //obtains the ID from the URL
+    todos = todos.filter((t) => t.id !== parseInt(id)); //creates a new array by keeping only the task objects whose id does not match the id of the given task object
+    res.status(204).send(); //sends empty response back to client as there is no content to send back in response
+});
 
